@@ -1,6 +1,6 @@
 {
     "name": "phaser3-typescript-project-template",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "description": "A Phaser 3 Project Template using Rollup and TypeScript",
     "main": "src/game.ts",
     "scripts": {
@@ -22,14 +22,15 @@
     },
     "homepage": "https://github.com/brannonh/phaser3-typescript-project-template#readme",
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^20.0.0",
+        "@rollup/plugin-node-resolve": "^13.0.4",
         "@rollup/plugin-replace": "^3.0.0",
+        "@rollup/plugin-typescript": "^8.2.5",
         "phaser": "^3.55.2",
-        "rollup": "^2.56.0",
-        "rollup-plugin-commonjs": "^10.1.0",
-        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup": "^2.56.2",
         "rollup-plugin-serve": "^1.1.0",
         "rollup-plugin-terser": "^7.0.2",
-        "rollup-plugin-typescript2": "^0.30.0",
+        "tslib": "^2.1.0",
         "typescript": "^4.3.5"
     }
 }
