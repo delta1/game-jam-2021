@@ -4,10 +4,10 @@
     "description": "A Phaser 3 Project Template using Rollup and TypeScript",
     "main": "src/game.ts",
     "scripts": {
-        "start": "npm run watch",
+        "start": "node esbuild.config.mjs -w",
         "dev": "rollup --config rollup.config.dev.js",
         "build": "rollup --config rollup.config.dist.js",
-        "watch": "rollup --watch --config rollup.config.dev.js"
+        "watch": "esbuild src/game.ts --servedir=dist --outdir=dist --bundle --sourcemap"
     },
     "repository": {
         "type": "git",
@@ -27,6 +27,8 @@
         "@rollup/plugin-node-resolve": "^13.0.4",
         "@rollup/plugin-replace": "^3.0.0",
         "@rollup/plugin-typescript": "^8.2.5",
+        "esbuild": "^0.13.12",
+        "esbuild-serve": "^1.0.1",
         "phaser": "^3.55.2",
         "rollup": "^2.56.2",
         "rollup-plugin-serve": "^1.1.0",
