@@ -79452,10 +79452,14 @@
   });
 
   // src/game.ts
-  var import_phaser = __toModule(require_phaser());
+  var Phaser = __toModule(require_phaser());
+  console.log("Phaser", Phaser);
   var platforms;
+  var keyboard;
   var player;
-  var cursors;
+  var jumpsAvailable = 0;
+  var jumping = false;
+  var jumpLock = false;
   var Demo = class extends Phaser.Scene {
     constructor() {
       super("demo");
@@ -79490,22 +79494,42 @@
         frameRate: 10,
         repeat: -1
       });
-      cursors = this.input.keyboard.createCursorKeys();
+      keyboard = this.input.keyboard.addKeys("w,a,s,d,f,space,shift");
+      console.log("keyboard", keyboard);
       this.physics.add.collider(player, platforms);
     }
     update() {
-      if (cursors.left.isDown) {
-        player.setVelocityX(-160);
-        player.anims.play("left", true);
-      } else if (cursors.right.isDown) {
-        player.setVelocityX(160);
+      if (keyboard.d.isDown) {
+        if (keyboard.shift.isDown) {
+          player.setVelocityX(400);
+        } else {
+          player.setVelocityX(200);
+        }
+        player.anims.play("right", true);
+      } else if (keyboard.a.isDown) {
+        if (keyboard.shift.isDown) {
+          player.setVelocityX(-400);
+        } else {
+          player.setVelocityX(-200);
+        }
         player.anims.play("right", true);
       } else {
         player.setVelocityX(0);
         player.anims.play("turn");
       }
-      if (cursors.up.isDown && player.body.touching.down) {
-        player.setVelocityY(-330);
+      if (player.body.touching.down) {
+        jumpsAvailable = 2;
+        jumping = false;
+        jumpLock = false;
+      }
+      if (jumping && keyboard.space.isUp && !jumpLock) {
+        jumpsAvailable -= 1;
+        jumpLock = true;
+      }
+      if (Phaser.Input.Keyboard.JustDown(keyboard.space) && jumpsAvailable > 0) {
+        jumping = true;
+        jumpLock = false;
+        player.setVelocityY(-500);
       }
     }
   };
@@ -79513,15 +79537,15 @@
   var config = {
     type: Phaser.AUTO,
     backgroundColor: "#1166AA",
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
     scene: Demo,
     parent: "phaser",
     physics: {
       default: "arcade",
       arcade: {
-        gravity: {y: 750},
-        debug: false
+        gravity: {y: 900},
+        debug: true
       }
     }
   };

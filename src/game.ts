@@ -1,6 +1,11 @@
-import "phaser";
+import * as Phaser from "phaser";
+console.log("Phaser", Phaser);
 
-let platforms, player, cursors;
+let platforms, keyboard;
+let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+let jumpsAvailable = 0;
+let jumping = false;
+let jumpLock = false;
 
 export default class Demo extends Phaser.Scene {
   constructor() {
@@ -44,24 +49,51 @@ export default class Demo extends Phaser.Scene {
     });
 
     //  Input Events
-    cursors = this.input.keyboard.createCursorKeys();
+    keyboard = this.input.keyboard.addKeys("w,a,s,d,f,space,shift");
+    console.log("keyboard", keyboard);
     this.physics.add.collider(player, platforms);
   }
 
   update() {
-    if (cursors.left.isDown) {
-      player.setVelocityX(-160);
-      player.anims.play("left", true);
-    } else if (cursors.right.isDown) {
-      player.setVelocityX(160);
+    // if (this.input.mousePointer.leftButtonDown()) {
+    //   console.log("mouse left");
+    // }
+    // if (this.input.mousePointer.rightButtonDown()) {
+    //   console.log("mouse right");
+    // }
+    if (keyboard.d.isDown) {
+      if (keyboard.shift.isDown) {
+        player.setVelocityX(400);
+      } else {
+        player.setVelocityX(200);
+      }
+      player.anims.play("right", true);
+    } else if (keyboard.a.isDown) {
+      if (keyboard.shift.isDown) {
+        player.setVelocityX(-400);
+      } else {
+        player.setVelocityX(-200);
+      }
       player.anims.play("right", true);
     } else {
       player.setVelocityX(0);
       player.anims.play("turn");
     }
 
-    if (cursors.up.isDown && player.body.touching.down) {
-      player.setVelocityY(-330);
+    if (player.body.touching.down) {
+      jumpsAvailable = 2;
+      jumping = false;
+      jumpLock = false;
+    }
+    if (jumping && keyboard.space.isUp && !jumpLock) {
+      jumpsAvailable -= 1;
+      jumpLock = true;
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(keyboard.space) && jumpsAvailable > 0) {
+      jumping = true;
+      jumpLock = false;
+      player.setVelocityY(-500);
     }
   }
 }
@@ -69,15 +101,15 @@ export default class Demo extends Phaser.Scene {
 const config = {
   type: Phaser.AUTO,
   backgroundColor: "#1166AA",
-  width: 800,
-  height: 600,
+  width: 1024,
+  height: 768,
   scene: Demo,
   parent: "phaser",
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 750 },
-      debug: false,
+      gravity: { y: 900 },
+      debug: true,
     },
   },
 };
