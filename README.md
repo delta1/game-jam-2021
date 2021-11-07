@@ -1,5 +1,7 @@
 # Game Jam 2021
 
+https://game-jam-2021.netlify.app/
+
 https://itch.io/jam/game-off-2021
 
 theme is "BUG"
