@@ -5,17 +5,14 @@
     "main": "src/game.ts",
     "scripts": {
         "start": "node esbuild.config.mjs -w",
-        "dev": "rollup --config rollup.config.dev.js",
-        "build": "rollup --config rollup.config.dist.js",
-        "watch": "esbuild src/game.ts --servedir=dist --outdir=dist --bundle --sourcemap"
+        "build": "rollup --config rollup.config.dist.js"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/brannonh/phaser3-typescript-project-template.git"
     },
     "authors": [
-        "Richard Davey <rich@photonstorm.com> (http://www.photonstorm.com)",
-        "Brannon Hall <brannonh.dev@gmail.com>"
+        "Byron Hambly <byron@hambly.dev>"
     ],
     "license": "MIT",
     "bugs": {
