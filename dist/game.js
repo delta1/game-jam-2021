@@ -35061,7 +35061,7 @@
           var GetValue = __webpack_require__(6);
           var LoaderEvents = __webpack_require__(95);
           var NOOP = __webpack_require__(1);
-          var Scene = __webpack_require__(418);
+          var Scene2 = __webpack_require__(418);
           var Systems = __webpack_require__(204);
           var SceneManager = new Class({
             initialize: function SceneManager2(game2, sceneConfig) {
@@ -35103,7 +35103,7 @@
                 key = entry.key;
                 sceneConfig = entry.scene;
                 var newScene;
-                if (sceneConfig instanceof Scene) {
+                if (sceneConfig instanceof Scene2) {
                   newScene = this.createSceneFromInstance(key, sceneConfig);
                 } else if (typeof sceneConfig === "object") {
                   newScene = this.createSceneFromObject(key, sceneConfig);
@@ -35180,7 +35180,7 @@
               }
               key = this.getKey(key, sceneConfig);
               var newScene;
-              if (sceneConfig instanceof Scene) {
+              if (sceneConfig instanceof Scene2) {
                 newScene = this.createSceneFromInstance(key, sceneConfig);
               } else if (typeof sceneConfig === "object") {
                 sceneConfig.key = key;
@@ -35298,7 +35298,7 @@
             },
             createSceneFromFunction: function(key, scene) {
               var newScene = new scene();
-              if (newScene instanceof Scene) {
+              if (newScene instanceof Scene2) {
                 var configKey = newScene.sys.settings.key;
                 if (configKey !== "") {
                   key = configKey;
@@ -35323,7 +35323,7 @@
               return newScene;
             },
             createSceneFromObject: function(key, sceneConfig) {
-              var newScene = new Scene(sceneConfig);
+              var newScene = new Scene2(sceneConfig);
               var configKey = newScene.sys.settings.key;
               if (configKey !== "") {
                 key = configKey;
@@ -35359,7 +35359,7 @@
               }
               if (typeof sceneConfig === "function") {
                 return key;
-              } else if (sceneConfig instanceof Scene) {
+              } else if (sceneConfig instanceof Scene2) {
                 key = sceneConfig.sys.settings.key;
               } else if (typeof sceneConfig === "object" && sceneConfig.hasOwnProperty("key")) {
                 key = sceneConfig.key;
@@ -35688,8 +35688,8 @@
            */
           var Class = __webpack_require__(0);
           var Systems = __webpack_require__(204);
-          var Scene = new Class({
-            initialize: function Scene2(config2) {
+          var Scene2 = new Class({
+            initialize: function Scene3(config2) {
               this.sys = new Systems(this, config2);
               this.game;
               this.anims;
@@ -35720,7 +35720,7 @@
             update: function() {
             }
           });
-          module2.exports = Scene;
+          module2.exports = Scene2;
         },
         function(module2, exports2, __webpack_require__) {
           /**
@@ -55455,7 +55455,7 @@
            * @license      {@link https://opensource.org/licenses/MIT|MIT License}
            */
           var Browser = __webpack_require__(136);
-          var Input = {
+          var Input2 = {
             gamepads: false,
             mspointer: false,
             touch: false,
@@ -55463,25 +55463,25 @@
           };
           function init() {
             if (typeof importScripts === "function") {
-              return Input;
+              return Input2;
             }
             if ("ontouchstart" in document.documentElement || navigator.maxTouchPoints && navigator.maxTouchPoints >= 1) {
-              Input.touch = true;
+              Input2.touch = true;
             }
             if (navigator.msPointerEnabled || navigator.pointerEnabled) {
-              Input.mspointer = true;
+              Input2.mspointer = true;
             }
             if (navigator.getGamepads) {
-              Input.gamepads = true;
+              Input2.gamepads = true;
             }
             if ("onwheel" in window || Browser.ie && "WheelEvent" in window) {
-              Input.wheelEvent = "wheel";
+              Input2.wheelEvent = "wheel";
             } else if ("onmousewheel" in window) {
-              Input.wheelEvent = "mousewheel";
+              Input2.wheelEvent = "mousewheel";
             } else if (Browser.firefox && "MouseScrollEvent" in window) {
-              Input.wheelEvent = "DOMMouseScroll";
+              Input2.wheelEvent = "DOMMouseScroll";
             }
-            return Input;
+            return Input2;
           }
           module2.exports = init();
         },
@@ -58304,8 +58304,8 @@
           if (false) {
             var FacebookInstantGamesPlugin;
           }
-          var Game = new Class({
-            initialize: function Game2(config2) {
+          var Game2 = new Class({
+            initialize: function Game3(config2) {
               this.config = new Config(config2);
               this.renderer = null;
               this.domContainer = null;
@@ -58448,7 +58448,7 @@
               this.pendingDestroy = false;
             }
           });
-          module2.exports = Game;
+          module2.exports = Game2;
         },
         function(module2, exports2, __webpack_require__) {
           /**
@@ -67561,7 +67561,7 @@
            */
           var CONST = __webpack_require__(203);
           var Extend = __webpack_require__(17);
-          var Input = {
+          var Input2 = {
             CreatePixelPerfectHandler: __webpack_require__(507),
             CreateInteractiveObject: __webpack_require__(508),
             Events: __webpack_require__(51),
@@ -67574,8 +67574,8 @@
             Pointer: __webpack_require__(412),
             Touch: __webpack_require__(1337)
           };
-          Input = Extend(false, Input, CONST);
-          module2.exports = Input;
+          Input2 = Extend(false, Input2, CONST);
+          module2.exports = Input2;
         },
         function(module2, exports2, __webpack_require__) {
           /**
@@ -75510,7 +75510,7 @@
            */
           var CONST = __webpack_require__(144);
           var Extend = __webpack_require__(17);
-          var Scene = {
+          var Scene2 = {
             Events: __webpack_require__(20),
             GetPhysicsPlugins: __webpack_require__(419),
             GetScenePlugins: __webpack_require__(420),
@@ -75519,8 +75519,8 @@
             Settings: __webpack_require__(421),
             Systems: __webpack_require__(204)
           };
-          Scene = Extend(false, Scene, CONST);
-          module2.exports = Scene;
+          Scene2 = Extend(false, Scene2, CONST);
+          module2.exports = Scene2;
         },
         function(module2, exports2, __webpack_require__) {
           /**
@@ -79453,7 +79453,6 @@
 
   // src/game.ts
   var Phaser = __toModule(require_phaser());
-  console.log("Phaser", Phaser);
   var platforms;
   var keyboard;
   var player;
@@ -79502,17 +79501,13 @@
         repeat: -1
       });
       keyboard = this.input.keyboard.addKeys("w,a,s,d,f,space,shift");
-      console.log("keyboard", keyboard);
       this.physics.add.collider(player, platforms);
-      this.input.mouse.onMouseDown((e) => console.log("mouseDown", e));
-      this.input.mouse.onMouseUp((e) => console.log("mouseUp", e));
     }
     update() {
       if (this.input.mousePointer.leftButtonDown() && !leftMouse) {
         leftMouse = true;
         let toX = this.input.mousePointer.x;
         let toY = this.input.mousePointer.y;
-        console.log("mouse left", toX, toY);
         this.time.addEvent({delay: 250, callback: () => leftMouse = false});
         let x = toX - player.x;
         let y = toY - player.y;
@@ -79523,7 +79518,6 @@
         rightMouse = true;
         let x = this.input.mousePointer.x;
         let y = this.input.mousePointer.y;
-        console.log("mouse right", x, y);
         this.time.addEvent({delay: 250, callback: () => rightMouse = false});
       }
       if (keyboard.shift.isDown && !boosting && boostAvailable) {
@@ -79548,7 +79542,7 @@
         } else {
           player.setVelocityX(-200);
         }
-        player.anims.play("right", true);
+        player.anims.play("left", true);
       } else {
         player.setVelocityX(0);
         player.anims.play("turn");
@@ -79581,7 +79575,7 @@
       default: "arcade",
       arcade: {
         gravity: {y: 900},
-        debug: true
+        debug: false
       }
     }
   };
@@ -79592,22 +79586,22 @@
     }
     fire(fromX, fromY, v) {
       this.body.reset(fromX, fromY);
+      this.setAngularVelocity(1e3);
       this.setActive(true);
       this.setVisible(true);
       this.setVelocity(300 * v.x, 300 * v.y);
     }
     preUpdate(time, delta) {
       super.preUpdate(time, delta);
-      if (this.y <= -32) {
-        this.setActive(false);
-        this.setVisible(false);
-      }
     }
   };
   var Bullets = class extends Phaser.Physics.Arcade.Group {
     constructor(scene) {
       super(scene.physics.world, scene, {allowGravity: false});
       this.createMultiple({
+        max: 0,
+        yoyo: true,
+        repeat: 2,
         frameQuantity: 10,
         key: "bullet",
         active: false,

@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-console.log("Phaser", Phaser);
+// console.log("Phaser", Phaser);
 
 let platforms, keyboard;
 let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -58,10 +58,8 @@ export default class Demo extends Phaser.Scene {
 
     //  Input Events
     keyboard = this.input.keyboard.addKeys("w,a,s,d,f,space,shift");
-    console.log("keyboard", keyboard);
+    // console.log("keyboard", keyboard);
     this.physics.add.collider(player, platforms);
-    this.input.mouse.onMouseDown((e) => console.log("mouseDown", e));
-    this.input.mouse.onMouseUp((e) => console.log("mouseUp", e));
   }
 
   update() {
@@ -69,7 +67,7 @@ export default class Demo extends Phaser.Scene {
       leftMouse = true;
       let toX = this.input.mousePointer.x;
       let toY = this.input.mousePointer.y;
-      console.log("mouse left", toX, toY);
+      // console.log("mouse left", toX, toY);
       this.time.addEvent({ delay: 250, callback: () => (leftMouse = false) });
       let x = toX - player.x;
       let y = toY - player.y;
@@ -80,7 +78,7 @@ export default class Demo extends Phaser.Scene {
       rightMouse = true;
       let x = this.input.mousePointer.x;
       let y = this.input.mousePointer.y;
-      console.log("mouse right", x, y);
+      // console.log("mouse right", x, y);
       this.time.addEvent({ delay: 250, callback: () => (rightMouse = false) });
     }
     if (keyboard.shift.isDown && !boosting && boostAvailable) {
@@ -106,7 +104,7 @@ export default class Demo extends Phaser.Scene {
       } else {
         player.setVelocityX(-200);
       }
-      player.anims.play("right", true);
+      player.anims.play("left", true);
     } else {
       player.setVelocityX(0);
       player.anims.play("turn");
@@ -141,7 +139,7 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 900 },
-      debug: true,
+      debug: false,
     },
   },
 };
@@ -155,6 +153,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
 
   fire(fromX, fromY, v) {
     this.body.reset(fromX, fromY);
+    this.setAngularVelocity(1000);
 
     this.setActive(true);
     this.setVisible(true);
@@ -165,10 +164,11 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    if (this.y <= -32) {
-      this.setActive(false);
-      this.setVisible(false);
-    }
+    // todo
+    // if (this.y <= -32) {
+    //   this.setActive(false);
+    //   this.setVisible(false);
+    // }
   }
 }
 
@@ -177,6 +177,9 @@ class Bullets extends Phaser.Physics.Arcade.Group {
     super(scene.physics.world, scene, { allowGravity: false });
 
     this.createMultiple({
+      max: 0,
+      yoyo: true,
+      repeat: 2,
       frameQuantity: 10,
       key: "bullet",
       active: false,
