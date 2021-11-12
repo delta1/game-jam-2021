@@ -79461,8 +79461,7 @@
   var jumpLock = false;
   var leftMouse = false;
   var rightMouse = false;
-  var boosting = false;
-  var boostAvailable = true;
+  var boosting = true;
   var bullets;
   var Demo = class extends Phaser.Scene {
     constructor() {
@@ -79477,12 +79476,21 @@
       });
     }
     create() {
+      this.physics.world.setBounds(-100, -100, 5e3, 5e3);
       bullets = new Bullets(this);
       platforms = this.physics.add.staticGroup();
-      platforms.create(400, 600, "platform").setScale(2).refreshBody();
-      player = this.physics.add.sprite(100, 450, "dude");
+      const ground = platforms.create(2500, 600, "platform");
+      ground.setScale(10, 1).refreshBody();
+      this.add.text(1e3, 300, "1000px", {color: "white"});
+      this.add.text(2e3, 300, "2000px", {color: "white"});
+      this.add.text(3e3, 300, "3000px", {color: "white"});
+      this.add.text(4e3, 300, "4000px", {color: "white"});
+      this.add.text(5e3, 300, "4000px", {color: "white"});
+      player = this.physics.add.sprite(500, 500, "dude");
       player.setBounce(0.2);
       player.setCollideWorldBounds(true);
+      this.cameras.main.setBounds(-100, -100, 5e3, 5e3);
+      this.cameras.main.startFollow(player);
       this.anims.create({
         key: "left",
         frames: this.anims.generateFrameNumbers("dude", {start: 0, end: 3}),
@@ -79506,8 +79514,10 @@
     update() {
       if (this.input.mousePointer.leftButtonDown() && !leftMouse) {
         leftMouse = true;
-        let toX = this.input.mousePointer.x;
-        let toY = this.input.mousePointer.y;
+        let toX = this.input.mousePointer.worldX;
+        let toY = this.input.mousePointer.worldY;
+        console.log("player", player.x, player.y);
+        console.log("mouse left", toX, toY);
         this.time.addEvent({delay: 250, callback: () => leftMouse = false});
         let x = toX - player.x;
         let y = toY - player.y;
@@ -79519,15 +79529,6 @@
         let x = this.input.mousePointer.x;
         let y = this.input.mousePointer.y;
         this.time.addEvent({delay: 250, callback: () => rightMouse = false});
-      }
-      if (keyboard.shift.isDown && !boosting && boostAvailable) {
-        boosting = true;
-        boostAvailable = false;
-        this.time.addEvent({delay: 1e3, callback: () => boosting = false});
-        this.time.addEvent({
-          delay: 3e3,
-          callback: () => boostAvailable = true
-        });
       }
       if (keyboard.d.isDown) {
         if (boosting) {
@@ -79575,7 +79576,7 @@
       default: "arcade",
       arcade: {
         gravity: {y: 900},
-        debug: false
+        debug: true
       }
     }
   };

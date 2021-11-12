@@ -1,14 +1,15 @@
 import * as Phaser from "phaser";
 // console.log("Phaser", Phaser);
 
-let platforms, keyboard;
+let platforms: Phaser.Physics.Arcade.StaticGroup;
+let keyboard;
 let player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 let jumpsAvailable = 0;
 let jumping = false;
 let jumpLock = false;
 let leftMouse = false;
 let rightMouse = false;
-let boosting = false;
+let boosting = true;
 let boostAvailable = true;
 let bullets;
 
@@ -27,14 +28,24 @@ export default class Demo extends Phaser.Scene {
   }
 
   create() {
+    this.physics.world.setBounds(-100, -100, 5000, 5000);
     bullets = new Bullets(this);
 
     platforms = this.physics.add.staticGroup();
-    platforms.create(400, 600, "platform").setScale(2).refreshBody();
+    const ground = platforms.create(2500, 600, "platform");
+    ground.setScale(10, 1).refreshBody();
 
-    player = this.physics.add.sprite(100, 450, "dude");
+    this.add.text(1000, 300, "1000px", { color: "white" });
+    this.add.text(2000, 300, "2000px", { color: "white" });
+    this.add.text(3000, 300, "3000px", { color: "white" });
+    this.add.text(4000, 300, "4000px", { color: "white" });
+    this.add.text(5000, 300, "4000px", { color: "white" });
+
+    player = this.physics.add.sprite(500, 500, "dude");
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
+    this.cameras.main.setBounds(-100, -100, 5000, 5000);
+    this.cameras.main.startFollow(player);
 
     this.anims.create({
       key: "left",
@@ -65,9 +76,10 @@ export default class Demo extends Phaser.Scene {
   update() {
     if (this.input.mousePointer.leftButtonDown() && !leftMouse) {
       leftMouse = true;
-      let toX = this.input.mousePointer.x;
-      let toY = this.input.mousePointer.y;
-      // console.log("mouse left", toX, toY);
+      let toX = this.input.mousePointer.worldX;
+      let toY = this.input.mousePointer.worldY;
+      console.log("player", player.x, player.y);
+      console.log("mouse left", toX, toY);
       this.time.addEvent({ delay: 250, callback: () => (leftMouse = false) });
       let x = toX - player.x;
       let y = toY - player.y;
@@ -81,15 +93,15 @@ export default class Demo extends Phaser.Scene {
       // console.log("mouse right", x, y);
       this.time.addEvent({ delay: 250, callback: () => (rightMouse = false) });
     }
-    if (keyboard.shift.isDown && !boosting && boostAvailable) {
-      boosting = true;
-      boostAvailable = false;
-      this.time.addEvent({ delay: 1000, callback: () => (boosting = false) });
-      this.time.addEvent({
-        delay: 3000,
-        callback: () => (boostAvailable = true),
-      });
-    }
+    // if (keyboard.shift.isDown && !boosting && boostAvailable) {
+    //   boosting = true;
+    // boostAvailable = false;
+    // this.time.addEvent({ delay: 1000, callback: () => (boosting = false) });
+    // this.time.addEvent({
+    //   delay: 3000,
+    //   callback: () => (boostAvailable = true),
+    // });
+    // }
 
     if (keyboard.d.isDown) {
       if (boosting) {
