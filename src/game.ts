@@ -9,9 +9,14 @@ let jumping = false;
 let jumpLock = false;
 let leftMouse = false;
 let rightMouse = false;
-let boosting = true;
+let boosting = false;
 let boostAvailable = true;
 let bullets;
+let god = false;
+let hitPoints = 3;
+let gameOver = false;
+let txtGameOver: Phaser.GameObjects.Text;
+let deathGroup;
 
 export default class Demo extends Phaser.Scene {
   constructor() {
@@ -28,12 +33,16 @@ export default class Demo extends Phaser.Scene {
   }
 
   create() {
-    this.physics.world.setBounds(-100, -100, 5000, 5000);
+    this.physics.world.setBounds(0, 0, 1024, 768);
     bullets = new Bullets(this);
 
     platforms = this.physics.add.staticGroup();
-    const ground = platforms.create(2500, 600, "platform");
-    ground.setScale(10, 1).refreshBody();
+    const ground = platforms
+      .create(1000, 700, "platform")
+      .setScale(4, 1)
+      .refreshBody();
+
+    const p1 = platforms.create(700, 500, "platform");
 
     this.add.text(1000, 300, "1000px", { color: "white" });
     this.add.text(2000, 300, "2000px", { color: "white" });
@@ -41,10 +50,20 @@ export default class Demo extends Phaser.Scene {
     this.add.text(4000, 300, "4000px", { color: "white" });
     this.add.text(5000, 300, "4000px", { color: "white" });
 
-    player = this.physics.add.sprite(500, 500, "dude");
+    txtGameOver = this.add
+      .text(100, 100, "Game Over!", { fontSize: "26px" })
+      .setVisible(false);
+
+    player = this.physics.add.sprite(200, 400, "dude");
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
-    this.cameras.main.setBounds(-100, -100, 5000, 5000);
+    player.body.setCollideWorldBounds(true, 0, 0, true);
+
+    this.physics.world.on("worldbounds", (p) => {
+      if (p.checkCollision.down) hitPoints = 0;
+    });
+
+    // this.cameras.main.setBounds(-100, -100, 5000, 5000);
     this.cameras.main.startFollow(player);
 
     this.anims.create({
@@ -68,17 +87,27 @@ export default class Demo extends Phaser.Scene {
     });
 
     //  Input Events
-    keyboard = this.input.keyboard.addKeys("w,a,s,d,f,space,shift");
+    keyboard = this.input.keyboard.addKeys("w,a,s,d,f,g,space,shift");
     // console.log("keyboard", keyboard);
     this.physics.add.collider(player, platforms);
   }
 
   update() {
+    if (hitPoints <= 0) {
+      gameOver = true;
+    }
+    if (gameOver) {
+      txtGameOver.setVisible(true);
+      return;
+    }
+    const worldView = this.cameras.main.worldView;
+    txtGameOver.setPosition(worldView.x + 400, worldView.y + 200);
+    // console.log(this.cameras.main.worldView);
     if (this.input.mousePointer.leftButtonDown() && !leftMouse) {
       leftMouse = true;
       let toX = this.input.mousePointer.worldX;
       let toY = this.input.mousePointer.worldY;
-      console.log("player", player.x, player.y);
+      // console.log("player", player.x, player.y);
       console.log("mouse left", toX, toY);
       this.time.addEvent({ delay: 250, callback: () => (leftMouse = false) });
       let x = toX - player.x;
@@ -93,16 +122,20 @@ export default class Demo extends Phaser.Scene {
       // console.log("mouse right", x, y);
       this.time.addEvent({ delay: 250, callback: () => (rightMouse = false) });
     }
-    // if (keyboard.shift.isDown && !boosting && boostAvailable) {
-    //   boosting = true;
-    // boostAvailable = false;
-    // this.time.addEvent({ delay: 1000, callback: () => (boosting = false) });
-    // this.time.addEvent({
-    //   delay: 3000,
-    //   callback: () => (boostAvailable = true),
-    // });
-    // }
+    if (keyboard.shift.isDown && !boosting && boostAvailable) {
+      boosting = true;
+      boostAvailable = false;
+      this.time.addEvent({ delay: 1000, callback: () => (boosting = false) });
+      this.time.addEvent({
+        delay: 3000,
+        callback: () => (boostAvailable = true),
+      });
+    }
+    // console.log("player", player.x, player.y);
 
+    if (keyboard.w.isDown && god) {
+      player.setVelocityY(-400);
+    }
     if (keyboard.d.isDown) {
       if (boosting) {
         player.setVelocityX(400);
@@ -151,7 +184,7 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 900 },
-      debug: false,
+      debug: true,
     },
   },
 };

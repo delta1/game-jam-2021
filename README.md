@@ -14,12 +14,22 @@ goals:
 - learn some phaser
 - have some fun
 
-"day 1" Nov 3: planning and hacking
+todo:
 
-- investigate phaser and the assets it ships with (no assets)
-- decide on game type and how it should work (thinking of a slashy type platformer)
-- find some placeholder assets (https://itch.io/game-assets/free?page=2)
-- music?: https://tallbeard.itch.io/music-loop-bundle
-- started with https://github.com/brannonh/phaser3-typescript-project-template
-- migrate JS bundling to esbuild, so much faster
-- set up deploy to netlify
+- [x] basic movement
+- [x] double jump
+- [x] shift boost
+- [x] shoot projectiles
+- [x] game over when hitting world bottom
+- [ ] close attack
+- [ ] player hit points
+- [ ] projectiles collide with static objects
+- [ ] projectiles collide with enemies
+- [ ] minor enemies with ai
+- [ ] boss enemy with ai
+- [ ] music
+- [ ] background graphics
+- [ ] level design
+- [ ]
+- [ ]
+- [ ]
