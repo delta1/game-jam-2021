@@ -16,16 +16,17 @@ let god = false;
 let hitPoints = 3;
 let gameOver = false;
 let txtGameOver: Phaser.GameObjects.Text;
-let deathGroup;
+let mobs: Phaser.Physics.Arcade.Group;
 
-export default class Demo extends Phaser.Scene {
+export default class Game extends Phaser.Scene {
   constructor() {
-    super("demo");
+    super("game");
   }
 
   preload() {
     this.load.image("platform", "assets/platform.png");
     this.load.image("bullet", "assets/bullet.png");
+    this.load.image("bomb", "assets/bomb.png");
     this.load.spritesheet("dude", "assets/dude.png", {
       frameWidth: 32,
       frameHeight: 48,
@@ -59,8 +60,8 @@ export default class Demo extends Phaser.Scene {
     player.setCollideWorldBounds(true);
     player.body.setCollideWorldBounds(true, 0, 0, true);
 
-    this.physics.world.on("worldbounds", (p) => {
-      if (p.checkCollision.down) hitPoints = 0;
+    this.physics.world.on("worldbounds", (a, b) => {
+      if (a.checkCollision.down) hitPoints = 0;
     });
 
     // this.cameras.main.setBounds(-100, -100, 5000, 5000);
@@ -86,10 +87,54 @@ export default class Demo extends Phaser.Scene {
       repeat: -1,
     });
 
+    mobs = this.physics.add.group({ allowGravity: false });
+
     //  Input Events
     keyboard = this.input.keyboard.addKeys("w,a,s,d,f,g,space,shift");
     // console.log("keyboard", keyboard);
     this.physics.add.collider(player, platforms);
+
+    this.physics.add.collider(bullets, platforms, (b) => {
+      b.body.gameObject.setActive(false);
+      b.body.gameObject.setVisible(false);
+    });
+
+    this.physics.add.collider(bullets, mobs, (b, m) => {
+      b.body.gameObject.setActive(false);
+      b.body.gameObject.setVisible(false);
+      m.body.gameObject.setActive(false);
+      m.body.gameObject.setVisible(false);
+      m.destroy();
+    });
+    this.physics.add.collider(mobs, platforms, (m) => {
+      m.body.gameObject.setActive(false);
+      m.body.gameObject.setVisible(false);
+      m.destroy();
+    });
+
+    this.physics.add.collider(player, mobs, (p, m) => {
+      console.log("collide");
+      m.body.gameObject.setActive(false);
+      m.body.gameObject.setVisible(false);
+      m.destroy();
+      hitPoints -= 1;
+      console.log("hitPoints", hitPoints);
+    });
+
+    this.time.addEvent({
+      delay: 5000,
+      loop: true,
+      callback: () => {
+        console.log("spawn");
+        let mob = mobs.create(300, 300, "bomb");
+        mob.setScale(2, 2);
+        mob.setCollideWorldBounds(true);
+        let x = mob.x - player.x;
+        let y = mob.y - player.y;
+        let v = new Phaser.Math.Vector2(x, y).normalize();
+        mob.setVelocity(-100 * v.x, -100 * v.y);
+      },
+    });
   }
 
   update() {
@@ -98,6 +143,7 @@ export default class Demo extends Phaser.Scene {
     }
     if (gameOver) {
       txtGameOver.setVisible(true);
+      this.physics.pause();
       return;
     }
     const worldView = this.cameras.main.worldView;
@@ -178,7 +224,7 @@ const config = {
   backgroundColor: "#1166AA",
   width: 1024,
   height: 768,
-  scene: Demo,
+  scene: Game,
   parent: "phaser",
   physics: {
     default: "arcade",
@@ -203,17 +249,17 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     this.setActive(true);
     this.setVisible(true);
 
-    this.setVelocity(300 * v.x, 300 * v.y);
+    this.setVelocity(600 * v.x, 600 * v.y);
   }
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    // todo
-    // if (this.y <= -32) {
-    //   this.setActive(false);
-    //   this.setVisible(false);
-    // }
+    const d = Phaser.Math.Distance.Between(player.x, player.y, this.x, this.y);
+    if (d >= 1000) {
+      this.setActive(false);
+      this.setVisible(false);
+    }
   }
 }
 
@@ -223,9 +269,7 @@ class Bullets extends Phaser.Physics.Arcade.Group {
 
     this.createMultiple({
       max: 0,
-      yoyo: true,
-      repeat: 2,
-      frameQuantity: 10,
+      frameQuantity: 3,
       key: "bullet",
       active: false,
       visible: false,

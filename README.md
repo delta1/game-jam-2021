@@ -21,11 +21,11 @@ todo:
 - [x] shift boost
 - [x] shoot projectiles
 - [x] game over when hitting world bottom
+- [x] projectiles collide with static objects
 - [ ] close attack
 - [ ] player hit points
-- [ ] projectiles collide with static objects
-- [ ] projectiles collide with enemies
-- [ ] minor enemies with ai
+- [x] projectiles collide with enemies
+- [x] minor enemies with ai
 - [ ] boss enemy with ai
 - [ ] music
 - [ ] background graphics
